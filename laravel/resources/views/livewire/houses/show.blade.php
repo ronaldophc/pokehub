@@ -10,6 +10,24 @@
                    class="text-sm text-zinc-400 hover:text-zinc-700 transition-colors">
                     {{ __('History') }}
                 </a>
+                <button
+                    x-data="{ copied: false }"
+                    x-on:click="navigator.clipboard.writeText('{{ url('/join/' . $house->invite_code) }}'); copied = true; setTimeout(() => copied = false, 2000)"
+                    x-bind:title="copied ? 'Copiado!' : 'Copiar link de convite'"
+                    class="flex items-center gap-1.5 text-sm transition-colors"
+                    x-bind:class="copied ? 'text-emerald-500' : 'text-zinc-400 hover:text-zinc-700'">
+                    <template x-if="!copied">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"/>
+                        </svg>
+                    </template>
+                    <template x-if="copied">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>
+                        </svg>
+                    </template>
+                    <span x-text="copied ? 'Copiado!' : 'Convite'" class="hidden sm:inline"></span>
+                </button>
                 @if($this->canManage())
                     <a href="{{ route('houses.members', $house) }}" wire:navigate
                        class="text-sm text-zinc-400 hover:text-zinc-700 transition-colors">

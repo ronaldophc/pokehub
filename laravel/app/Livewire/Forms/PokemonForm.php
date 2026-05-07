@@ -8,13 +8,13 @@ use Livewire\Form;
 
 class PokemonForm extends Form
 {
-    #[Validate('nullable|string|min:2|max:60')]
+    #[Validate('nullable|string|min:2|max:60', as: 'apelido')]
     public ?string $name = null;
 
-    #[Validate('required|string|min:2|max:60')]
+    #[Validate('required|string|min:2|max:60', message: 'Selecione um pokémon válido.')]
     public string $species = '';
 
-    #[Validate('nullable|string|max:500')]
+    #[Validate('nullable|string|max:500', as: 'observações')]
     public ?string $notes = null;
 
     #[Validate('nullable|integer')]
@@ -22,16 +22,16 @@ class PokemonForm extends Form
 
     public bool $isShiny = false;
 
-    #[Validate('nullable|string|max:100')]
+    #[Validate('nullable|string|max:100', as: 'TM')]
     public ?string $tm = null;
 
-    #[Validate('nullable|string|max:50')]
+    #[Validate('nullable|string|max:50', as: 'held X')]
     public ?string $heldXName = null;
 
     #[Validate('nullable|integer')]
     public ?int $heldXTier = null;
 
-    #[Validate('nullable|string|max:50')]
+    #[Validate('nullable|string|max:50', as: 'held Y')]
     public ?string $heldYName = null;
 
     #[Validate('nullable|integer')]
