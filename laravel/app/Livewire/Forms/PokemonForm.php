@@ -22,7 +22,7 @@ class PokemonForm extends Form
 
     public bool $isShiny = false;
 
-    #[Validate('nullable|string|max:100', as: 'TM')]
+    #[Validate('nullable|string|in:TM Tank,TM DPS,TM Burst,TM Off-Tank', as: 'TM')]
     public ?string $tm = null;
 
     #[Validate('nullable|string|max:50', as: 'held X')]

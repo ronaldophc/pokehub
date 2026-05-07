@@ -161,10 +161,16 @@
 
                     {{-- TM + Shiny --}}
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
-                        <div>
-                            <label class="block text-xs font-medium text-zinc-500 mb-1">{{ __('TM (optional)') }}</label>
-                            <input wire:model="form.tm" type="text"
-                                   class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500">
+                        <div x-data="tmSelect(@js($form->species), @js((bool) $form->isShiny))" x-show="hasSpecies">
+                            <label class="block text-xs font-medium text-zinc-500 mb-1">TM</label>
+                            <select wire:model="form.tm"
+                                    x-effect="$el.value = $wire.form.tm || ''"
+                                    class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500">
+                                <option value="">{{ __('None') }}</option>
+                                <template x-for="opt in availableOptions" :key="opt">
+                                    <option :value="opt" x-text="opt"></option>
+                                </template>
+                            </select>
                             @error('form.tm') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         <div class="flex items-center gap-2 pb-2">
@@ -178,8 +184,12 @@
                     <div x-data="heldItemSelect(@js($form->heldXName), @js($heldX), 'form.heldXName', 'form.heldXTier')">
                         <label class="block text-xs font-medium text-zinc-500 mb-1">{{ __('Held X (optional)') }}</label>
                         <div class="grid grid-cols-3 gap-2">
-                            <div class="col-span-2">
+                            <div class="col-span-2 relative">
+                                <div class="absolute inset-y-0 left-2 flex items-center pointer-events-none" x-show="item">
+                                    <img :src="`/images/helds/tiers/${item.toLowerCase()}-t${$wire.form.heldXTier || 1}.png`" class="h-8 w-8 object-contain" onerror="this.style.display='none'">
+                                </div>
                                 <select x-model="item"
+                                        :class="item ? 'pl-10' : ''"
                                         class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500">
                                     <option value="">{{ __('None') }}</option>
                                     @foreach(array_keys($heldX) as $itemName)
@@ -204,8 +214,12 @@
                     <div x-data="heldItemSelect(@js($form->heldYName), @js($heldY), 'form.heldYName', 'form.heldYTier')">
                         <label class="block text-xs font-medium text-zinc-500 mb-1">{{ __('Held Y (optional)') }}</label>
                         <div class="grid grid-cols-3 gap-2">
-                            <div class="col-span-2">
+                            <div class="col-span-2 relative">
+                                <div class="absolute inset-y-0 left-2 flex items-center pointer-events-none" x-show="item">
+                                    <img :src="`/images/helds/tiers/${item.toLowerCase()}-t${$wire.form.heldYTier || 1}.png`" class="h-8 w-8 object-contain" onerror="this.style.display='none'">
+                                </div>
                                 <select x-model="item"
+                                        :class="item ? 'pl-10' : ''"
                                         class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500">
                                     <option value="">{{ __('None') }}</option>
                                     @foreach(array_keys($heldY) as $itemName)
@@ -243,7 +257,7 @@
 
         {{-- Grid de cards --}}
         @if($pokemons->isNotEmpty())
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 @foreach($pokemons as $pokemon)
                     <div @class([
                         'border rounded-xl overflow-hidden flex flex-col transition-all',
@@ -254,7 +268,7 @@
 
                         {{-- Sprite --}}
                         <div @class([
-                            'flex items-center justify-center p-4 h-32',
+                            'flex items-center justify-center p-4 h-40',
                             'bg-zinc-50'    => $pokemon->isAvailable(),
                             'bg-zinc-100'   => !$pokemon->isAvailable(),
                         ]) x-data="{ failed: false }">
@@ -264,7 +278,7 @@
                                     src="{{ $pokemon->sprite_url }}"
                                     alt="{{ $pokemon->species }}"
                                     @class([
-                                        'h-24 w-24 object-contain drop-shadow-sm transition-opacity',
+                                        'h-32 w-32 object-contain drop-shadow-sm transition-opacity',
                                         'opacity-40' => !$pokemon->isAvailable(),
                                     ])
                                     x-on:error="failed = true"
@@ -305,12 +319,22 @@
                                         </span>
                                     @endif
                                     @if($pokemon->held_x_name)
-                                        <span class="inline-flex items-center text-xs font-medium bg-violet-50 text-violet-600 border border-violet-200 rounded px-1.5 py-0.5">
+                                        <span class="inline-flex items-center gap-1 text-xs font-medium bg-violet-50 text-violet-600 border border-violet-200 rounded px-1.5 py-0.5">
+                                            @if($pokemon->held_x_tier)
+                                                <img src="/images/helds/tiers/{{ strtolower($pokemon->held_x_name) }}-t{{ $pokemon->held_x_tier }}.png" class="h-8 w-8 object-contain shrink-0" onerror="this.style.display='none'">
+                                            @else
+                                                <img src="/images/helds/tiers/{{ strtolower($pokemon->held_x_name) }}-t1.png" class="h-8 w-8 object-contain shrink-0" onerror="this.style.display='none'">
+                                            @endif
                                             {{ $pokemon->held_x_name }}@if($pokemon->held_x_tier) T{{ $pokemon->held_x_tier }}@endif
                                         </span>
                                     @endif
                                     @if($pokemon->held_y_name)
-                                        <span class="inline-flex items-center text-xs font-medium bg-emerald-50 text-emerald-600 border border-emerald-200 rounded px-1.5 py-0.5">
+                                        <span class="inline-flex items-center gap-1 text-xs font-medium bg-emerald-50 text-emerald-600 border border-emerald-200 rounded px-1.5 py-0.5">
+                                            @if($pokemon->held_y_tier)
+                                                <img src="/images/helds/tiers/{{ strtolower($pokemon->held_y_name) }}-t{{ $pokemon->held_y_tier }}.png" class="h-8 w-8 object-contain shrink-0" onerror="this.style.display='none'">
+                                            @else
+                                                <img src="/images/helds/tiers/{{ strtolower($pokemon->held_y_name) }}-t1.png" class="h-8 w-8 object-contain shrink-0" onerror="this.style.display='none'">
+                                            @endif
                                             {{ $pokemon->held_y_name }}@if($pokemon->held_y_tier) T{{ $pokemon->held_y_tier }}@endif
                                         </span>
                                     @endif

@@ -6,11 +6,11 @@ tasks:
 
   down:
     usage: Para os containers
-    run: docker compose down
+    run: docker compose down -t 0
 
   restart:
     usage: Reinicia os containers
-    run: docker compose restart
+    run: docker compose restart -t 0
 
   build:
     usage: Reconstrói e inicia os containers

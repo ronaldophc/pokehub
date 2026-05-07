@@ -14,7 +14,8 @@ services:
         networks:
             - pokehub-network
         depends_on:
-            - db
+            db:
+                condition: service_healthy
 
     nginx:
         image: nginx:alpine
@@ -23,7 +24,7 @@ services:
         ports:
             - "80:80"
         volumes:
-            - ./docker/nginx:/etc/nginx/conf.d
+            - ./docker/nginx/laravel.conf:/etc/nginx/conf.d/default.conf
             - ./laravel/public:/var/www/public
         networks:
             - pokehub-network
@@ -67,7 +68,8 @@ services:
             - pokehub-network
         depends_on:
             - app
-            - db
+            db:
+                condition: service_healthy
 
     vite:
         image: node:22-alpine
@@ -100,6 +102,11 @@ services:
             - dbdata:/var/lib/mysql
         networks:
             - pokehub-network
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-psecret"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
