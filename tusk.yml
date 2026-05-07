@@ -67,3 +67,14 @@ tasks:
   ps:
     usage: Lista os containers e seus status
     run: docker compose ps
+
+  pma:
+    usage: Sobe o phpMyAdmin temporário (acesse em http://localhost:8081) — derruba com Ctrl+C
+    run: |
+      docker run --rm \
+        --network pokehub_pokehub-network \
+        --name pma_temp \
+        -e PMA_HOST=db \
+        -p 8081:80 \
+        phpmyadmin/phpmyadmin
+      docker stop pma_temp 2>/dev/null || true
