@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <clipPath id="c">
+      <circle cx="16" cy="16" r="15"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#c)">
+    <!-- Bottom half -->
+    <rect x="0" y="0" width="32" height="32" fill="#f4f4f5"/>
+    <!-- Top half violet -->
+    <rect x="0" y="0" width="32" height="16" fill="#7c3aed"/>
+    <!-- Middle band -->
+    <rect x="0" y="13.5" width="32" height="5" fill="#18181b"/>
+    <!-- Center button ring -->
+    <circle cx="16" cy="16" r="5.5" fill="#18181b"/>
+    <!-- Center button face -->
+    <circle cx="16" cy="16" r="3.5" fill="#ede9fe"/>
+  </g>
+  <!-- Outer border -->
+  <circle cx="16" cy="16" r="15" fill="none" stroke="#18181b" stroke-width="2"/>
+</svg>
