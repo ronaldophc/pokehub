@@ -74,6 +74,8 @@ services:
         image: mysql:8.0
         container_name: pokehub_db
         restart: unless-stopped
+        env_file:
+            - ./laravel/.env
         environment:
             MYSQL_DATABASE: ${DB_DATABASE}
             MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
