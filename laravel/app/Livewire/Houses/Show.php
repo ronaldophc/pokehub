@@ -86,11 +86,11 @@ class Show extends Component
         if ($this->editingId) {
             $pokemon = Pokemon::findOrFail($this->editingId);
             $this->authorize('update', $pokemon);
-            $pokemon->update($this->form->toArray());
+            $pokemon->update($this->form->toPokemonAttributes());
             $this->dispatch('notify', message: __('Pokémon updated.'), type: 'success');
         } else {
             $this->authorize('create', new Pokemon(['house_id' => $this->house->id]));
-            $this->house->pokemons()->create($this->form->toArray());
+            $this->house->pokemons()->create($this->form->toPokemonAttributes());
             $this->dispatch('notify', message: __('Pokémon registered!'), type: 'success');
         }
 
