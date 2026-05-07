@@ -1,0 +1,69 @@
+tasks:
+
+  up:
+    usage: Inicia os containers
+    run: docker compose up -d
+
+  down:
+    usage: Para os containers
+    run: docker compose down
+
+  restart:
+    usage: Reinicia os containers
+    run: docker compose restart
+
+  build:
+    usage: Reconstrói e inicia os containers
+    run: docker compose up -d --build
+
+  start:
+    usage: Startar containers
+    run: docker compose start
+
+  logs:
+    usage: Exibe os logs de um serviço (app, nginx, reverb, queue, vite, db)
+    args:
+      service:
+        usage: Nome do serviço (app, nginx, reverb, queue, vite, db)
+    run: docker compose logs -f ${service}
+
+  migrate:
+    usage: Roda as migrations
+    run: docker compose exec app php artisan migrate
+
+  fresh:
+    usage: Reseta o banco e roda todas as migrations
+    run: docker compose exec app php artisan migrate:fresh
+
+  tinker:
+    usage: Abre o tinker
+    run: docker compose exec app php artisan tinker
+
+  artisan:
+    usage: Roda um comando artisan (ex. tusk artisan -- route:list)
+    args:
+      cmd:
+        usage: Comando artisan
+    run: docker compose exec app php artisan ${cmd}
+
+  bash:
+    usage: Abre bash no container da aplicação
+    run: docker compose exec app bash
+
+  composer:
+    usage: Roda um comando composer (ex. tusk composer -- require nome/pacote)
+    args:
+      cmd:
+        usage: Comando composer
+    run: docker compose exec app composer ${cmd}
+
+  npm:
+    usage: Roda um comando npm no container do vite (ex. tusk npm -- install pacote)
+    args:
+      cmd:
+        usage: Comando npm
+    run: docker compose exec vite npm ${cmd}
+
+  ps:
+    usage: Lista os containers e seus status
+    run: docker compose ps

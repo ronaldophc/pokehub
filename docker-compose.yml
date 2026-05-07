@@ -1,0 +1,126 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                user: ronaldo
+                uid: 1000
+        container_name: pokehub_app
+        restart: unless-stopped
+        working_dir: /var/www
+        volumes:
+            - ./laravel:/var/www
+        networks:
+            - pokehub-network
+        depends_on:
+            - db
+
+    nginx:
+        image: nginx:alpine
+        container_name: pokehub_nginx
+        restart: unless-stopped
+        ports:
+            - "80:80"
+        volumes:
+            - ./docker/nginx:/etc/nginx/conf.d
+            - ./laravel/public:/var/www/public
+        networks:
+            - pokehub-network
+        depends_on:
+            - app
+
+    reverb:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                user: ronaldo
+                uid: 1000
+        container_name: pokehub_reverb
+        restart: unless-stopped
+        ports:
+            - "8080:8080"
+        working_dir: /var/www
+        volumes:
+            - ./laravel:/var/www
+        command: php artisan reverb:start --host=0.0.0.0 --port=8080
+        networks:
+            - pokehub-network
+        depends_on:
+            - app
+
+    queue:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                user: ronaldo
+                uid: 1000
+        container_name: pokehub_queue
+        restart: unless-stopped
+        working_dir: /var/www
+        volumes:
+            - ./laravel:/var/www
+        command: php artisan queue:work --sleep=3 --tries=3
+        networks:
+            - pokehub-network
+        depends_on:
+            - app
+            - db
+
+    vite:
+        image: node:22-alpine
+        container_name: pokehub_vite
+        restart: unless-stopped
+        ports:
+            - "5173:5173"
+        working_dir: /var/www
+        volumes:
+            - ./laravel:/var/www
+        command: npm run dev
+        networks:
+            - pokehub-network
+        depends_on:
+            - app
+
+    db:
+        image: mysql:8.0
+        container_name: pokehub_db
+        platform: linux/x86_64
+        restart: unless-stopped
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_DATABASE: pokehub
+            MYSQL_ROOT_PASSWORD: secret
+            MYSQL_USER: pokehub
+            MYSQL_PASSWORD: secret
+        volumes:
+            - dbdata:/var/lib/mysql
+        networks:
+            - pokehub-network
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: pokehub_pma
+        platform: linux/x86_64
+        restart: unless-stopped
+        ports:
+            - "8081:80"
+        environment:
+            PMA_HOST: db
+            PMA_PORT: 3306
+            MYSQL_ROOT_PASSWORD: secret
+        networks:
+            - pokehub-network
+        depends_on:
+            - db
+
+networks:
+    pokehub-network:
+        driver: bridge
+
+volumes:
+    dbdata:
+        driver: local

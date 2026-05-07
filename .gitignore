@@ -1,0 +1,6 @@
+.docker/
+laravel/
+nuxt/
+.idea/
+idea/
+.vscode/
