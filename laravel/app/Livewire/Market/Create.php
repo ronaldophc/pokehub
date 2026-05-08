@@ -39,7 +39,8 @@ class Create extends Component
         }
 
         $attributes = $this->form->toListingAttributes();
-        $attributes['user_id'] = auth()->id();
+        $attributes['user_id']      = auth()->id();
+        $attributes['contact_nick'] = auth()->user()->name;
 
         if ($this->screenshot) {
             $attributes['screenshot_path'] = $this->screenshot->store('market-screenshots', 'public');

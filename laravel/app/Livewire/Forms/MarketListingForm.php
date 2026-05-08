@@ -36,9 +36,6 @@ class MarketListingForm extends Form
     #[Validate('required|string', as: 'servidor')]
     public string $server = '';
 
-    #[Validate('required|string|min:2|max:100', as: 'nick in-game')]
-    public string $contactNick = '';
-
     #[Validate('nullable|string|max:100', as: 'Discord')]
     public ?string $contactDiscord = null;
 
@@ -47,19 +44,18 @@ class MarketListingForm extends Form
 
     public function fromListing(\App\Models\MarketListing $listing): void
     {
-        $this->species       = $listing->species;
-        $this->spriteUrl     = $listing->sprite_url ?? '';
-        $this->isShiny       = $listing->is_shiny;
-        $this->tm            = $listing->tm;
-        $this->heldXName     = $listing->held_x_name;
-        $this->heldXTier     = $listing->held_x_tier;
-        $this->heldYName     = $listing->held_y_name;
-        $this->heldYTier     = $listing->held_y_tier;
-        $this->price         = $listing->price;
-        $this->server        = $listing->server->value;
-        $this->contactNick   = $listing->contact_nick;
+        $this->species        = $listing->species;
+        $this->spriteUrl      = $listing->sprite_url ?? '';
+        $this->isShiny        = $listing->is_shiny;
+        $this->tm             = $listing->tm;
+        $this->heldXName      = $listing->held_x_name;
+        $this->heldXTier      = $listing->held_x_tier;
+        $this->heldYName      = $listing->held_y_name;
+        $this->heldYTier      = $listing->held_y_tier;
+        $this->price          = $listing->price;
+        $this->server         = $listing->server->value;
         $this->contactDiscord = $listing->contact_discord;
-        $this->notes         = $listing->notes;
+        $this->notes          = $listing->notes;
     }
 
     public function toListingAttributes(): array
@@ -87,7 +83,6 @@ class MarketListingForm extends Form
             'held_y_tier'     => $this->heldYName ? $this->heldYTier : null,
             'price'           => $this->price,
             'server'          => $this->server,
-            'contact_nick'    => $this->contactNick,
             'contact_discord' => $this->contactDiscord ?: null,
             'notes'           => $this->notes ?: null,
         ];

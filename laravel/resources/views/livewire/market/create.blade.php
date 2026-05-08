@@ -161,19 +161,11 @@
                 </div>
 
                 {{-- Contato --}}
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-medium text-zinc-500 mb-1">Nick in-game <span class="text-red-400">*</span></label>
-                        <input wire:model="form.contactNick" type="text" placeholder="Seu personagem"
-                               class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500">
-                        @error('form.contactNick') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-zinc-500 mb-1">Discord (opcional)</label>
-                        <input wire:model="form.contactDiscord" type="text" placeholder="usuario#0000 ou @usuario"
-                               class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500">
-                        @error('form.contactDiscord') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-                    </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-500 mb-1">Discord (opcional)</label>
+                    <input wire:model="form.contactDiscord" type="text" placeholder="usuario#0000 ou @usuario"
+                           class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500">
+                    @error('form.contactDiscord') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                 </div>
 
                 {{-- Observações --}}

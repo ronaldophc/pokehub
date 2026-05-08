@@ -123,9 +123,9 @@
                                     <p class="text-xs text-zinc-400">Preço</p>
                                     <p class="text-sm font-bold text-zinc-900">{{ $listing->price }}</p>
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs text-zinc-400">{{ $listing->server->value }}</span>
-                                    <span class="text-xs text-zinc-300">{{ $listing->expires_at->diffForHumans(null, true) }}</span>
+                                <div class="flex items-center justify-between gap-1">
+                                    <span class="text-xs text-zinc-400 truncate">{{ $listing->contact_nick }}</span>
+                                    <span class="text-xs text-zinc-300 shrink-0">{{ $listing->server->value }}</span>
                                 </div>
                             </div>
                         </div>
