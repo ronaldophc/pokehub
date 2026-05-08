@@ -73,6 +73,10 @@
                        class="text-xs text-zinc-400 hover:text-zinc-700 transition-colors px-2 py-1 rounded hover:bg-zinc-100">
                         Ver
                     </a>
+                    <a href="{{ route('market.edit', $listing) }}" wire:navigate
+                       class="text-xs text-zinc-400 hover:text-zinc-700 transition-colors px-2 py-1 rounded hover:bg-zinc-100">
+                        Editar
+                    </a>
                     @if($listing->isActive())
                         <button x-on:click="$dispatch('open-confirm', {
                                     message: 'Marcar como vendido?',

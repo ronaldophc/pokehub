@@ -45,7 +45,36 @@ class MarketListingForm extends Form
     #[Validate('nullable|string|max:500', as: 'observações')]
     public ?string $notes = null;
 
+    public function fill(\App\Models\MarketListing $listing): void
+    {
+        $this->species       = $listing->species;
+        $this->spriteUrl     = $listing->sprite_url ?? '';
+        $this->isShiny       = $listing->is_shiny;
+        $this->tm            = $listing->tm;
+        $this->heldXName     = $listing->held_x_name;
+        $this->heldXTier     = $listing->held_x_tier;
+        $this->heldYName     = $listing->held_y_name;
+        $this->heldYTier     = $listing->held_y_tier;
+        $this->price         = $listing->price;
+        $this->server        = $listing->server->value;
+        $this->contactNick   = $listing->contact_nick;
+        $this->contactDiscord = $listing->contact_discord;
+        $this->notes         = $listing->notes;
+    }
+
     public function toListingAttributes(): array
+    {
+        return $this->toCoreAttributes() + [
+            'expires_at' => now()->addDays(config('market.expiry_days', 7)),
+        ];
+    }
+
+    public function toUpdateAttributes(): array
+    {
+        return $this->toCoreAttributes();
+    }
+
+    private function toCoreAttributes(): array
     {
         return [
             'species'         => $this->species,
@@ -61,7 +90,6 @@ class MarketListingForm extends Form
             'contact_nick'    => $this->contactNick,
             'contact_discord' => $this->contactDiscord ?: null,
             'notes'           => $this->notes ?: null,
-            'expires_at'      => now()->addDays(config('market.expiry_days', 7)),
         ];
     }
 }

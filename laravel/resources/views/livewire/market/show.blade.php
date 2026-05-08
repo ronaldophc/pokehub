@@ -133,6 +133,10 @@
                     @auth
                         @if(auth()->id() === $listing->user_id)
                             <div class="flex gap-2 pt-2 border-t border-zinc-100">
+                                <a href="{{ route('market.edit', $listing) }}" wire:navigate
+                                   class="text-sm px-4 py-2 rounded-lg text-zinc-500 hover:bg-zinc-100 transition-colors">
+                                    Editar
+                                </a>
                                 @if($listing->isActive())
                                     <button x-on:click="$dispatch('open-confirm', {
                                                 message: 'Marcar este anúncio como vendido?',

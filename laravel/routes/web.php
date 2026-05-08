@@ -6,6 +6,7 @@ use App\Livewire\Houses\Join as HousesJoin;
 use App\Livewire\Houses\Members as HousesMembers;
 use App\Livewire\Houses\Show as HousesShow;
 use App\Livewire\Market\Create as MarketCreate;
+use App\Livewire\Market\Edit as MarketEdit;
 use App\Livewire\Market\Index as MarketIndex;
 use App\Livewire\Market\MyListings as MarketMyListings;
 use App\Livewire\Market\Show as MarketShow;
@@ -26,6 +27,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/market', MarketIndex::class)->name('market.index');
 Route::get('/market/create', MarketCreate::class)->middleware('auth')->name('market.create');
 Route::get('/market/my-listings', MarketMyListings::class)->middleware('auth')->name('market.my-listings');
+Route::get('/market/{listing}/edit', MarketEdit::class)->middleware('auth')->name('market.edit');
 Route::get('/market/{listing}', MarketShow::class)->name('market.show');
 
 Route::view('profile', 'profile')
