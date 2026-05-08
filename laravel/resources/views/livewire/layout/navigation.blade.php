@@ -23,37 +23,57 @@ new class extends Component
                 </a>
 
                 <div class="hidden sm:flex items-center gap-1">
-                    <a href="{{ route('houses.index') }}" wire:navigate
+                    @auth
+                        <a href="{{ route('houses.index') }}" wire:navigate
+                           class="px-3 py-1.5 rounded-md text-sm font-medium transition-colors
+                                  {{ request()->routeIs('houses.*') ? 'text-white bg-zinc-700' : 'text-zinc-400 hover:text-white hover:bg-zinc-800' }}">
+                            {{ __('Houses') }}
+                        </a>
+                    @endauth
+                    <a href="{{ route('market.index') }}" wire:navigate
                        class="px-3 py-1.5 rounded-md text-sm font-medium transition-colors
-                              {{ request()->routeIs('houses.*') ? 'text-white bg-zinc-700' : 'text-zinc-400 hover:text-white hover:bg-zinc-800' }}">
-                        {{ __('Houses') }}
+                              {{ request()->routeIs('market.*') ? 'text-white bg-zinc-700' : 'text-zinc-400 hover:text-white hover:bg-zinc-800' }}">
+                        Market
                     </a>
                 </div>
             </div>
 
             <div class="hidden sm:flex items-center">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
-                            <span x-data="{{ json_encode(['name' => auth()->user()->name]) }}"
-                                  x-text="name"
-                                  x-on:profile-updated.window="name = $event.detail.name">
-                            </span>
-                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                    </x-slot>
+                @auth
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <button class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
+                                <span x-data="{{ json_encode(['name' => auth()->user()?->name ?? '']) }}"
+                                      x-text="name"
+                                      x-on:profile-updated.window="name = $event.detail.name">
+                                </span>
+                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </x-slot>
 
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('profile')" wire:navigate>
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
-                        <button wire:click="logout" class="w-full text-start">
-                            <x-dropdown-link>{{ __('Log Out') }}</x-dropdown-link>
-                        </button>
-                    </x-slot>
-                </x-dropdown>
+                        <x-slot name="content">
+                            <x-dropdown-link :href="route('profile')" wire:navigate>
+                                {{ __('Profile') }}
+                            </x-dropdown-link>
+                            <button wire:click="logout" class="w-full text-start">
+                                <x-dropdown-link>{{ __('Log Out') }}</x-dropdown-link>
+                            </button>
+                        </x-slot>
+                    </x-dropdown>
+                @else
+                    <div class="flex items-center gap-1">
+                        <a href="{{ route('login') }}" wire:navigate
+                           class="px-3 py-1.5 rounded-md text-sm font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
+                            Entrar
+                        </a>
+                        <a href="{{ route('register') }}" wire:navigate
+                           class="px-3 py-1.5 rounded-md text-sm font-medium bg-violet-600 text-white hover:bg-violet-700 transition-colors">
+                            Cadastrar
+                        </a>
+                    </div>
+                @endauth
             </div>
 
             <div class="-me-2 flex items-center sm:hidden">
@@ -69,26 +89,41 @@ new class extends Component
 
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden border-t border-zinc-800">
         <div class="px-4 py-3 space-y-1">
-            <a href="{{ route('houses.index') }}" wire:navigate
+            @auth
+                <a href="{{ route('houses.index') }}" wire:navigate
+                   class="block px-3 py-2 rounded-md text-sm font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
+                    {{ __('Houses') }}
+                </a>
+            @endauth
+            <a href="{{ route('market.index') }}" wire:navigate
                class="block px-3 py-2 rounded-md text-sm font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
-                {{ __('Houses') }}
+                Market
             </a>
         </div>
 
         <div class="border-t border-zinc-800 px-4 py-3 space-y-1">
-            <div class="text-sm font-medium text-white mb-1"
-                 x-data="{{ json_encode(['name' => auth()->user()->name]) }}"
-                 x-text="name"
-                 x-on:profile-updated.window="name = $event.detail.name">
-            </div>
-            <div class="text-xs text-zinc-500 mb-3">{{ auth()->user()->email }}</div>
+            @auth
+                <div class="text-sm font-medium text-white mb-1"
+                     x-data="{{ json_encode(['name' => auth()->user()?->name ?? '']) }}"
+                     x-text="name"
+                     x-on:profile-updated.window="name = $event.detail.name">
+                </div>
+                <div class="text-xs text-zinc-500 mb-3">{{ auth()->user()?->email }}</div>
 
-            <a href="{{ route('profile') }}" wire:navigate class="block px-3 py-2 rounded-md text-sm text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
-                {{ __('Profile') }}
-            </a>
-            <button wire:click="logout" class="w-full text-start px-3 py-2 rounded-md text-sm text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
-                {{ __('Log Out') }}
-            </button>
+                <a href="{{ route('profile') }}" wire:navigate class="block px-3 py-2 rounded-md text-sm text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
+                    {{ __('Profile') }}
+                </a>
+                <button wire:click="logout" class="w-full text-start px-3 py-2 rounded-md text-sm text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
+                    {{ __('Log Out') }}
+                </button>
+            @else
+                <a href="{{ route('login') }}" wire:navigate class="block px-3 py-2 rounded-md text-sm text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
+                    Entrar
+                </a>
+                <a href="{{ route('register') }}" wire:navigate class="block px-3 py-2 rounded-md text-sm text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
+                    Cadastrar
+                </a>
+            @endauth
         </div>
     </div>
 </nav>
