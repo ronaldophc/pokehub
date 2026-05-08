@@ -43,7 +43,7 @@ class Show extends Component
     public function render()
     {
         return view('livewire.market.show', [
-            'spriteUrl' => Pokemon::spriteUrl($this->listing->species),
+            'spriteUrl' => $this->listing->sprite_url ?: Pokemon::spriteUrl($this->listing->species),
         ]);
     }
 }

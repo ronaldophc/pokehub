@@ -91,7 +91,7 @@
                     {{-- Preço --}}
                     <div class="bg-zinc-50 rounded-xl px-4 py-3">
                         <p class="text-xs text-zinc-400 mb-0.5">Preço</p>
-                        <p class="text-2xl font-bold text-zinc-900">{{ number_format($listing->price, 0, ',', '.') }}</p>
+                        <p class="text-2xl font-bold text-zinc-900">{{ $listing->price }}</p>
                         <p class="text-xs text-zinc-400 mt-0.5">Servidor {{ $listing->server->value }}</p>
                     </div>
 

@@ -40,7 +40,7 @@
                 <div class="flex items-center justify-center w-16 h-16 bg-zinc-50 rounded-lg shrink-0" x-data="{ failed: false }">
                     <img
                         x-show="!failed"
-                        src="{{ \App\Models\Pokemon::spriteUrl($listing->species) }}"
+                        src="{{ $listing->sprite_url ?: \App\Models\Pokemon::spriteUrl($listing->species) }}"
                         alt="{{ $listing->species }}"
                         class="h-14 w-14 object-contain drop-shadow-sm"
                         x-on:error="failed = true"
@@ -58,7 +58,7 @@
                         <span class="text-xs text-zinc-400">{{ $listing->server->value }}</span>
                     </div>
                     <div class="flex items-center gap-3 mt-1">
-                        <span class="text-sm font-bold text-zinc-900">{{ number_format($listing->price, 0, ',', '.') }}</span>
+                        <span class="text-sm font-bold text-zinc-900">{{ $listing->price }}</span>
                         @if($listing->isActive())
                             <span class="text-xs text-zinc-400">Expira {{ $listing->expires_at->diffForHumans() }}</span>
                         @elseif($tab === 'expired')

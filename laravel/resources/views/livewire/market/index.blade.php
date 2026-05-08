@@ -71,7 +71,7 @@
                         <div class="flex items-center justify-center p-3 h-32 bg-zinc-50 relative" x-data="{ failed: false }">
                             <img
                                 x-show="!failed"
-                                src="{{ \App\Models\Pokemon::spriteUrl($listing->species) }}"
+                                src="{{ $listing->sprite_url ?: \App\Models\Pokemon::spriteUrl($listing->species) }}"
                                 alt="{{ $listing->species }}"
                                 class="h-24 w-24 object-contain drop-shadow-sm"
                                 x-on:error="failed = true"
@@ -110,7 +110,7 @@
                             @endif
 
                             <div class="mt-auto pt-1.5 border-t border-zinc-100 space-y-1">
-                                <p class="text-sm font-bold text-zinc-900">{{ number_format($listing->price, 0, ',', '.') }}</p>
+                                <p class="text-sm font-bold text-zinc-900">{{ $listing->price }}</p>
                                 <div class="flex items-center justify-between">
                                     <span class="text-xs text-zinc-400">{{ $listing->server->value }}</span>
                                     <span class="text-xs text-zinc-300">{{ $listing->expires_at->diffForHumans(null, true) }}</span>

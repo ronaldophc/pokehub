@@ -19,7 +19,7 @@
                 {{-- Pokémon --}}
                 <div>
                     <label class="block text-xs font-medium text-zinc-500 mb-1">Pokémon <span class="text-red-400">*</span></label>
-                    <div x-data="pokemonAutocomplete(@js($form->species))"
+                    <div x-data="pokemonAutocomplete(@js($form->species), 'form.spriteUrl')"
                          x-on:click.outside="open = false"
                          class="relative">
                         <input
@@ -154,8 +154,8 @@
 
                 {{-- Preço --}}
                 <div>
-                    <label class="block text-xs font-medium text-zinc-500 mb-1">Preço (dinheiro in-game) <span class="text-red-400">*</span></label>
-                    <input wire:model="form.price" type="number" min="1" placeholder="ex: 500000"
+                    <label class="block text-xs font-medium text-zinc-500 mb-1">Preço <span class="text-red-400">*</span></label>
+                    <input wire:model="form.price" type="text" placeholder="ex: 500kk ou 1.5kkk"
                            class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500">
                     @error('form.price') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                 </div>

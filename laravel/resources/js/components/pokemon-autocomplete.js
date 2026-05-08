@@ -1,5 +1,6 @@
-export default (initialSpecies) => ({
+export default (initialSpecies, spriteField = null) => ({
     search: initialSpecies || '',
+    spriteField,
     results: [],
     open: false,
     loading: false,
@@ -36,6 +37,9 @@ export default (initialSpecies) => ({
     select(item) {
         this.search = item.l;
         this.$wire.set('form.species', item.l);
+        if (this.spriteField) {
+            this.$wire.set(this.spriteField, `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${item.id}.png`);
+        }
         this.open = false;
     },
 
