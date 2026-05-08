@@ -29,15 +29,19 @@ class Index extends Component
     #[Url]
     public bool $shinyOnly = false;
 
+    #[Url]
+    public string $tm = '';
+
     public function updatedSearch(): void    { $this->resetPage(); }
     public function updatedServer(): void    { $this->resetPage(); }
     public function updatedPriceMin(): void  { $this->resetPage(); }
     public function updatedPriceMax(): void  { $this->resetPage(); }
     public function updatedShinyOnly(): void { $this->resetPage(); }
+    public function updatedTm(): void        { $this->resetPage(); }
 
     public function clearFilters(): void
     {
-        $this->reset('search', 'server', 'priceMin', 'priceMax', 'shinyOnly');
+        $this->reset('search', 'server', 'priceMin', 'priceMax', 'shinyOnly', 'tm');
         $this->resetPage();
     }
 
@@ -50,6 +54,7 @@ class Index extends Component
             ->when($this->priceMin !== '', fn ($q) => $q->where('price', '>=', (int) $this->priceMin))
             ->when($this->priceMax !== '', fn ($q) => $q->where('price', '<=', (int) $this->priceMax))
             ->when($this->shinyOnly, fn ($q) => $q->where('is_shiny', true))
+            ->when($this->tm, fn ($q) => $q->where('tm', $this->tm))
             ->latest()
             ->paginate(24);
 

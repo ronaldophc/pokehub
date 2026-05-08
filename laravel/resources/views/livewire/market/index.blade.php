@@ -47,12 +47,21 @@
                 <input wire:model.live.debounce.300ms="priceMax" type="number" min="1" placeholder="Preço max"
                        class="border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500 w-28">
             </div>
+            <div>
+                <select wire:model.live="tm"
+                        class="border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500">
+                    <option value="">Todas as TMs</option>
+                    @foreach(['TM Tank', 'TM DPS', 'TM Burst', 'TM Off-Tank'] as $tmOpt)
+                        <option value="{{ $tmOpt }}">{{ $tmOpt }}</option>
+                    @endforeach
+                </select>
+            </div>
             <div class="flex items-center gap-2">
                 <input wire:model.live="shinyOnly" id="shinyOnly" type="checkbox"
                        class="rounded border-zinc-300 text-amber-500 shadow-sm focus:ring-amber-400">
                 <label for="shinyOnly" class="text-sm text-zinc-600">Shiny</label>
             </div>
-            @if($search || $server || $priceMin !== '' || $priceMax !== '' || $shinyOnly)
+            @if($search || $server || $priceMin !== '' || $priceMax !== '' || $shinyOnly || $tm)
                 <button wire:click="clearFilters"
                         class="text-xs text-zinc-400 hover:text-zinc-700 underline transition-colors">
                     Limpar filtros
