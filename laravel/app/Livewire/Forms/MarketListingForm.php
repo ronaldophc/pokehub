@@ -45,7 +45,7 @@ class MarketListingForm extends Form
     #[Validate('nullable|string|max:500', as: 'observações')]
     public ?string $notes = null;
 
-    public function fill(\App\Models\MarketListing $listing): void
+    public function fromListing(\App\Models\MarketListing $listing): void
     {
         $this->species       = $listing->species;
         $this->spriteUrl     = $listing->sprite_url ?? '';

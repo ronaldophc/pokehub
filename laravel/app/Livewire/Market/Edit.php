@@ -25,7 +25,7 @@ class Edit extends Component
     {
         $this->authorize('update', $listing);
         $this->listing = $listing;
-        $this->form->fill($listing);
+        $this->form->fromListing($listing);
     }
 
     public function save(): void
