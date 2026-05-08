@@ -68,7 +68,7 @@
                     </div>
 
                     {{-- Equipamentos --}}
-                    @if($listing->tm || $listing->held_x_name || $listing->held_y_name)
+                    @if($listing->tm || $listing->held_x_name || $listing->held_y_name || $listing->extra_helds)
                         <div class="flex flex-wrap gap-1.5">
                             @if($listing->tm)
                                 <span class="inline-flex items-center text-xs font-medium bg-sky-50 text-sky-600 border border-sky-200 rounded px-2 py-1">{{ $listing->tm }}</span>
@@ -85,6 +85,15 @@
                                     {{ $listing->held_y_name }}@if($listing->held_y_tier) T{{ $listing->held_y_tier }}@endif
                                 </span>
                             @endif
+                            @foreach($listing->extra_helds ?? [] as $extra)
+                                @if(!empty($extra['name']))
+                                    <span class="inline-flex items-center gap-1.5 text-xs font-medium bg-zinc-50 text-zinc-500 border border-zinc-200 rounded px-2 py-1">
+                                        <img src="/images/helds/tiers/{{ strtolower($extra['name']) }}-t{{ $extra['tier'] ?? 1 }}.png" class="h-5 w-5 object-contain" onerror="this.style.display='none'">
+                                        {{ $extra['name'] }}@if(!empty($extra['tier'])) T{{ $extra['tier'] }}@endif
+                                        <span class="text-zinc-400">(inativo)</span>
+                                    </span>
+                                @endif
+                            @endforeach
                         </div>
                     @endif
 

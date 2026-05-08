@@ -37,6 +37,8 @@ class PokemonForm extends Form
     #[Validate('nullable|integer')]
     public ?int $heldYTier = null;
 
+    public array $extraHelds = [];
+
     public function fillFrom(Pokemon $pokemon): void
     {
         $this->name = $pokemon->name;
@@ -47,8 +49,9 @@ class PokemonForm extends Form
         $this->tm = $pokemon->tm;
         $this->heldXName = $pokemon->held_x_name;
         $this->heldXTier = $pokemon->held_x_tier;
-        $this->heldYName = $pokemon->held_y_name;
-        $this->heldYTier = $pokemon->held_y_tier;
+        $this->heldYName  = $pokemon->held_y_name;
+        $this->heldYTier  = $pokemon->held_y_tier;
+        $this->extraHelds = $pokemon->extra_helds ?? [];
     }
 
     public function toPokemonAttributes(): array
@@ -63,8 +66,19 @@ class PokemonForm extends Form
             'tm'          => $this->tm ?: null,
             'held_x_name' => $this->heldXName ?: null,
             'held_x_tier' => $this->heldXName ? $this->heldXTier : null,
-            'held_y_name' => $this->heldYName ?: null,
-            'held_y_tier' => $this->heldYName ? $this->heldYTier : null,
+            'held_y_name'  => $this->heldYName ?: null,
+            'held_y_tier'  => $this->heldYName ? $this->heldYTier : null,
+            'extra_helds'  => $this->normalizedExtraHelds(),
         ];
+    }
+
+    private function normalizedExtraHelds(): ?array
+    {
+        $filtered = array_values(array_filter(
+            $this->extraHelds,
+            fn ($h) => ! empty($h['name'])
+        ));
+
+        return $filtered ?: null;
     }
 }

@@ -104,6 +104,17 @@ class Show extends Component
         $this->dispatch('notify', message: __('Pokémon removed.'), type: 'success');
     }
 
+    public function addExtraHeld(): void
+    {
+        $this->form->extraHelds[] = ['name' => '', 'tier' => null];
+    }
+
+    public function removeExtraHeld(int $index): void
+    {
+        unset($this->form->extraHelds[$index]);
+        $this->form->extraHelds = array_values($this->form->extraHelds);
+    }
+
     public function cancelForm(): void
     {
         $this->resetForm();
@@ -130,9 +141,10 @@ class Show extends Component
             ->get();
 
         $members = $this->house->houseMemberships()->with('user')->get();
-        $heldX = Pokemon::HELD_X;
-        $heldY = Pokemon::HELD_Y;
+        $heldX    = Pokemon::HELD_X;
+        $heldY    = Pokemon::HELD_Y;
+        $allItems = Pokemon::HELD_X + Pokemon::HELD_Y;
 
-        return view('livewire.houses.show', compact('pokemons', 'members', 'heldX', 'heldY'));
+        return view('livewire.houses.show', compact('pokemons', 'members', 'heldX', 'heldY', 'allItems'));
     }
 }

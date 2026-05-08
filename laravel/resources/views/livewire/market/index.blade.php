@@ -40,14 +40,7 @@
                     @endforeach
                 </select>
             </div>
-            <div class="flex items-center gap-1">
-                <input wire:model.live.debounce.300ms="priceMin" type="number" min="1" placeholder="Preço min"
-                       class="border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500 w-28">
-                <span class="text-zinc-400 text-sm">–</span>
-                <input wire:model.live.debounce.300ms="priceMax" type="number" min="1" placeholder="Preço max"
-                       class="border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500 w-28">
-            </div>
-            <div>
+<div>
                 <select wire:model.live="tm"
                         class="border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500">
                     <option value="">Todas as TMs</option>
@@ -61,7 +54,7 @@
                        class="rounded border-zinc-300 text-amber-500 shadow-sm focus:ring-amber-400">
                 <label for="shinyOnly" class="text-sm text-zinc-600">Shiny</label>
             </div>
-            @if($search || $server || $priceMin !== '' || $priceMax !== '' || $shinyOnly || $tm)
+            @if($search || $server || $shinyOnly || $tm)
                 <button wire:click="clearFilters"
                         class="text-xs text-zinc-400 hover:text-zinc-700 underline transition-colors">
                     Limpar filtros
@@ -139,7 +132,7 @@
         @else
             <x-card class="text-center py-16">
                 <p class="text-zinc-400 text-sm">Nenhum anúncio encontrado.</p>
-                @if($search || $server || $priceMin !== '' || $priceMax !== '' || $shinyOnly)
+                @if($search || $server || $shinyOnly || $tm)
                     <button wire:click="clearFilters"
                             class="mt-3 text-sm text-violet-600 hover:text-violet-700 font-medium">
                         Limpar filtros

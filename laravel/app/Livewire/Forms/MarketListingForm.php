@@ -42,6 +42,8 @@ class MarketListingForm extends Form
     #[Validate('nullable|string|max:500', as: 'observações')]
     public ?string $notes = null;
 
+    public array $extraHelds = [];
+
     public function fromListing(\App\Models\MarketListing $listing): void
     {
         $this->species        = $listing->species;
@@ -56,6 +58,7 @@ class MarketListingForm extends Form
         $this->server         = $listing->server->value;
         $this->contactDiscord = $listing->contact_discord;
         $this->notes          = $listing->notes;
+        $this->extraHelds     = $listing->extra_helds ?? [];
     }
 
     public function toListingAttributes(): array
@@ -85,6 +88,17 @@ class MarketListingForm extends Form
             'server'          => $this->server,
             'contact_discord' => $this->contactDiscord ?: null,
             'notes'           => $this->notes ?: null,
+            'extra_helds'     => $this->normalizedExtraHelds(),
         ];
+    }
+
+    private function normalizedExtraHelds(): ?array
+    {
+        $filtered = array_values(array_filter(
+            $this->extraHelds,
+            fn ($h) => ! empty($h['name'])
+        ));
+
+        return $filtered ?: null;
     }
 }

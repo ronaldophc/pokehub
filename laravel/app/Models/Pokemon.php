@@ -25,6 +25,7 @@ class Pokemon extends Model
         'held_x_tier',
         'held_y_name',
         'held_y_tier',
+        'extra_helds',
         'current_holder_id',
         'held_since',
     ];
@@ -33,8 +34,9 @@ class Pokemon extends Model
         'held_since' => 'datetime',
         'level' => 'integer',
         'is_shiny' => 'boolean',
-        'held_x_tier' => 'integer',
-        'held_y_tier' => 'integer',
+        'held_x_tier'  => 'integer',
+        'held_y_tier'  => 'integer',
+        'extra_helds'  => 'array',
     ];
 
     public const HELD_X = [
@@ -58,6 +60,7 @@ class Pokemon extends Model
         'X-Elemental' => [1,2,3,4,5,6,7],
         'X-Cooldown'  => [3,5,7],
         'X-Blink'     => [5],
+        'X-Upgrade'   => [4,5,6,7,8],
     ];
 
     public const HELD_Y = [
@@ -74,6 +77,8 @@ class Pokemon extends Model
         'Y-Dig'          => [1],
         'Y-Smash'        => [1],
         'Y-Cut'          => [1],
+        'Y-Antiself'     => [7],
+        'Y-Blur'         => [7],
     ];
 
     public function house(): BelongsTo

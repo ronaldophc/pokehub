@@ -13,7 +13,7 @@ class MarketListing extends Model
 {
     protected $fillable = [
         'user_id', 'species', 'sprite_url', 'is_shiny', 'tm',
-        'held_x_name', 'held_x_tier', 'held_y_name', 'held_y_tier',
+        'held_x_name', 'held_x_tier', 'held_y_name', 'held_y_tier', 'extra_helds',
         'price', 'server', 'contact_nick', 'contact_discord',
         'notes', 'screenshot_path', 'status', 'expires_at',
     ];
@@ -22,8 +22,9 @@ class MarketListing extends Model
     {
         return [
             'is_shiny'    => 'boolean',
-            'held_x_tier' => 'integer',
-            'held_y_tier' => 'integer',
+            'held_x_tier'  => 'integer',
+            'held_y_tier'  => 'integer',
+            'extra_helds'  => 'array',
             'expires_at'  => 'datetime',
             'server'      => PxgServer::class,
             'status'      => MarketStatus::class,

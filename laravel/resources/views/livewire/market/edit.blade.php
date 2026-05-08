@@ -43,6 +43,9 @@
                               name-field="form.heldYName" tier-field="form.heldYTier"
                               :current-name="$form->heldYName" />
 
+                {{-- Helds inativos --}}
+                <x-extra-helds-field :extra-helds="$form->extraHelds" :all-items="$allItems" />
+
                 {{-- Preço --}}
                 <div>
                     <label class="block text-xs font-medium text-zinc-500 mb-1">Preço <span class="text-red-400">*</span></label>

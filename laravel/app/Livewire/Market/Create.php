@@ -19,6 +19,17 @@ class Create extends Component
     public MarketListingForm $form;
     public $screenshot = null;
 
+    public function addExtraHeld(): void
+    {
+        $this->form->extraHelds[] = ['name' => '', 'tier' => null];
+    }
+
+    public function removeExtraHeld(int $index): void
+    {
+        unset($this->form->extraHelds[$index]);
+        $this->form->extraHelds = array_values($this->form->extraHelds);
+    }
+
     public function save(): void
     {
         $activeCount = MarketListing::where('user_id', auth()->id())
@@ -55,9 +66,10 @@ class Create extends Component
     public function render()
     {
         return view('livewire.market.create', [
-            'heldX'   => Pokemon::HELD_X,
-            'heldY'   => Pokemon::HELD_Y,
-            'servers' => PxgServer::cases(),
+            'heldX'    => Pokemon::HELD_X,
+            'heldY'    => Pokemon::HELD_Y,
+            'allItems' => Pokemon::HELD_X + Pokemon::HELD_Y,
+            'servers'  => PxgServer::cases(),
         ]);
     }
 }

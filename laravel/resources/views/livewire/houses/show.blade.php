@@ -122,6 +122,10 @@
                     <x-held-field :label="__('Held Y (optional)')" :items="$heldY"
                                   name-field="form.heldYName" tier-field="form.heldYTier"
                                   :current-name="$form->heldYName" />
+
+                    {{-- Helds inativos --}}
+                    <x-extra-helds-field :extra-helds="$form->extraHelds" :all-items="$allItems" />
+
                     <div class="flex gap-3">
                         <button type="submit"
                                 wire:loading.attr="disabled" wire:target="save"
