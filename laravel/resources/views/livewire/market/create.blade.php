@@ -51,7 +51,7 @@
                                     x-bind:class="highlighted === i ? 'bg-violet-50 text-violet-900' : 'text-zinc-700 hover:bg-zinc-50'"
                                     class="w-full text-left px-3 py-1.5 text-sm flex items-center gap-2.5 transition-colors"
                                 >
-                                    <img :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png`"
+                                    <img :src="p.sprite || `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png`"
                                          class="w-8 h-8 object-contain flex-shrink-0"
                                          x-on:error="$el.style.display='none'">
                                     <span x-text="p.l"></span>

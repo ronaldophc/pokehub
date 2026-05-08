@@ -38,7 +38,7 @@ export default (initialSpecies, spriteField = null) => ({
         this.search = item.l;
         this.$wire.set('form.species', item.l);
         if (this.spriteField) {
-            this.$wire.set(this.spriteField, `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${item.id}.png`);
+            this.$wire.set(this.spriteField, item.sprite || `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${item.id}.png`);
         }
         this.open = false;
     },
