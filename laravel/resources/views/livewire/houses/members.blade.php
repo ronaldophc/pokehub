@@ -17,8 +17,11 @@
                     <p class="font-mono font-semibold text-zinc-900 mt-2 text-lg tracking-widest">{{ $house->invite_code }}</p>
                     <p class="text-xs text-zinc-400 mt-1">{{ url('/join/' . $house->invite_code) }}</p>
                 </div>
-                <button wire:click="regenerateCode"
-                        wire:confirm="{{ __('Regenerating the code invalidates the current link. Continue?') }}"
+                <button x-on:click="$dispatch('open-confirm', {
+                            message: '{{ __('Regenerating the code invalidates the current link. Continue?') }}',
+                            type: 'warning',
+                            action: () => $wire.regenerateCode()
+                        })"
                         wire:loading.attr="disabled"
                         wire:target="regenerateCode"
                         class="text-sm text-zinc-400 hover:text-zinc-700 transition-colors disabled:opacity-50">
@@ -64,8 +67,11 @@
                                         <span wire:loading.remove wire:target="demoteToMember({{ $member->user_id }})">{{ __('Demote') }}</span>
                                         <span wire:loading wire:target="demoteToMember({{ $member->user_id }})">{{ __('Demoting...') }}</span>
                                     </button>
-                                    <button wire:click="transferOwnership({{ $member->user_id }})"
-                                            wire:confirm="{{ __('Transfer leadership to :name?', ['name' => $member->user->name]) }}"
+                                    <button x-on:click="$dispatch('open-confirm', {
+                                                message: '{{ __('Transfer leadership to :name?', ['name' => $member->user->name]) }}',
+                                                type: 'warning',
+                                                action: () => $wire.transferOwnership({{ $member->user_id }})
+                                            })"
                                             wire:loading.attr="disabled"
                                             wire:target="transferOwnership({{ $member->user_id }})"
                                             class="text-xs text-amber-400 hover:text-amber-600 transition-colors disabled:opacity-50">
@@ -75,8 +81,11 @@
                                 @endif
                             @endif
 
-                            <button wire:click="removeMember({{ $member->user_id }})"
-                                    wire:confirm="{{ __('Remove :name from house?', ['name' => $member->user->name]) }}"
+                            <button x-on:click="$dispatch('open-confirm', {
+                                        message: '{{ __('Remove :name from house?', ['name' => $member->user->name]) }}',
+                                        type: 'danger',
+                                        action: () => $wire.removeMember({{ $member->user_id }})
+                                    })"
                                     wire:loading.attr="disabled"
                                     wire:target="removeMember({{ $member->user_id }})"
                                     class="text-xs text-red-400 hover:text-red-600 transition-colors disabled:opacity-50">
@@ -132,8 +141,11 @@
                         <p class="text-sm font-medium text-zinc-700">{{ __('Delete house') }}</p>
                         <p class="text-xs text-zinc-400 mt-0.5">{{ __('Permanently removes the house and all its pokémons.') }}</p>
                     </div>
-                    <button wire:click="delete"
-                            wire:confirm="{{ __('Delete :name? This action cannot be undone.', ['name' => $house->name]) }}"
+                    <button x-on:click="$dispatch('open-confirm', {
+                                message: '{{ __('Delete :name? This action cannot be undone.', ['name' => $house->name]) }}',
+                                type: 'danger',
+                                action: () => $wire.delete()
+                            })"
                             wire:loading.attr="disabled" wire:target="delete"
                             class="text-sm text-red-500 hover:text-red-700 font-medium transition-colors disabled:opacity-50">
                         <span wire:loading.remove wire:target="delete">{{ __('Delete') }}</span>

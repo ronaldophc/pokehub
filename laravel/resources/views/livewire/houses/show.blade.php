@@ -383,8 +383,11 @@
                                                 class="text-xs text-zinc-300 hover:text-zinc-600 transition-colors">
                                             {{ __('Edit') }}
                                         </button>
-                                        <button wire:click="delete({{ $pokemon->id }})"
-                                                wire:confirm="{{ __('Remove') }} {{ $pokemon->name }}?"
+                                        <button x-on:click="$dispatch('open-confirm', {
+                                                    message: '{{ __('Remove') }} {{ $pokemon->name }}?',
+                                                    type: 'danger',
+                                                    action: () => $wire.delete({{ $pokemon->id }})
+                                                })"
                                                 wire:loading.attr="disabled" wire:target="delete({{ $pokemon->id }})"
                                                 class="text-xs text-red-300 hover:text-red-500 transition-colors disabled:opacity-50">
                                             <span wire:loading.remove wire:target="delete({{ $pokemon->id }})">{{ __('Remove') }}</span>

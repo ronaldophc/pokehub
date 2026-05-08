@@ -134,16 +134,22 @@
                         @if(auth()->id() === $listing->user_id)
                             <div class="flex gap-2 pt-2 border-t border-zinc-100">
                                 @if($listing->isActive())
-                                    <button wire:click="markSold"
-                                            wire:confirm="Marcar este anúncio como vendido?"
+                                    <button x-on:click="$dispatch('open-confirm', {
+                                                message: 'Marcar este anúncio como vendido?',
+                                                type: 'info',
+                                                action: () => $wire.markSold()
+                                            })"
                                             wire:loading.attr="disabled" wire:target="markSold"
                                             class="text-sm px-4 py-2 rounded-lg bg-violet-50 text-violet-700 hover:bg-violet-100 transition-colors disabled:opacity-50 font-medium">
                                         <span wire:loading.remove wire:target="markSold">Marcar como vendido</span>
                                         <span wire:loading wire:target="markSold">Marcando...</span>
                                     </button>
                                 @endif
-                                <button wire:click="delete"
-                                        wire:confirm="Remover este anúncio?"
+                                <button x-on:click="$dispatch('open-confirm', {
+                                            message: 'Remover este anúncio?',
+                                            type: 'danger',
+                                            action: () => $wire.delete()
+                                        })"
                                         wire:loading.attr="disabled" wire:target="delete"
                                         class="text-sm px-4 py-2 rounded-lg text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors disabled:opacity-50">
                                     <span wire:loading.remove wire:target="delete">Remover</span>

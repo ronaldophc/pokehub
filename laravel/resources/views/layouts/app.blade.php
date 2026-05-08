@@ -64,6 +64,7 @@
         </div>
 
         <x-notifications />
+        <x-confirm-modal />
 
         @if(session('toast'))
             <script>

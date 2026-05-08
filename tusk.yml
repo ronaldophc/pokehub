@@ -68,10 +68,15 @@ tasks:
     usage: Lista os containers e seus status
     run: docker compose ps
 
+  npm-build:
+    usage: Compila os assets frontend para produção
+    run: docker run --rm -v ./laravel:/app -w /app node:22-alpine sh -c "npm install && npm run build"
+
   deploy:
     usage: Faz deploy da nova versão em produção (rodar no servidor)
     run: |
       git pull
+      docker run --rm -v ./laravel:/app -w /app node:22-alpine sh -c "npm install && npm run build"
       docker compose -f docker-compose.prod.yml build app
       docker compose -f docker-compose.prod.yml up -d app
       docker compose -f docker-compose.prod.yml exec app php artisan migrate --force
@@ -79,7 +84,7 @@ tasks:
       docker compose -f docker-compose.prod.yml exec app php artisan config:cache
       docker compose -f docker-compose.prod.yml exec app php artisan route:cache
       docker compose -f docker-compose.prod.yml exec app php artisan view:cache
-      docker compose -f docker-compose.prod.yml restart queue reverb
+      docker compose -f docker-compose.prod.yml restart queue reverb nginx
 
   prod-logs:
     usage: Logs de produção de um serviço (app, nginx, reverb, queue, db)

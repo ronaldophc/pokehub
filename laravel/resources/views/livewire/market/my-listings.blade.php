@@ -74,16 +74,22 @@
                         Ver
                     </a>
                     @if($listing->isActive())
-                        <button wire:click="markSold({{ $listing->id }})"
-                                wire:confirm="Marcar como vendido?"
+                        <button x-on:click="$dispatch('open-confirm', {
+                                    message: 'Marcar como vendido?',
+                                    type: 'info',
+                                    action: () => $wire.markSold({{ $listing->id }})
+                                })"
                                 wire:loading.attr="disabled" wire:target="markSold({{ $listing->id }})"
                                 class="text-xs text-violet-600 hover:text-violet-800 transition-colors px-2 py-1 rounded hover:bg-violet-50 disabled:opacity-50">
                             <span wire:loading.remove wire:target="markSold({{ $listing->id }})">Vendido</span>
                             <span wire:loading wire:target="markSold({{ $listing->id }})">...</span>
                         </button>
                     @endif
-                    <button wire:click="delete({{ $listing->id }})"
-                            wire:confirm="Remover este anúncio?"
+                    <button x-on:click="$dispatch('open-confirm', {
+                                message: 'Remover este anúncio?',
+                                type: 'danger',
+                                action: () => $wire.delete({{ $listing->id }})
+                            })"
                             wire:loading.attr="disabled" wire:target="delete({{ $listing->id }})"
                             class="text-xs text-red-300 hover:text-red-500 transition-colors px-2 py-1 rounded hover:bg-red-50 disabled:opacity-50">
                         <span wire:loading.remove wire:target="delete({{ $listing->id }})">Remover</span>
