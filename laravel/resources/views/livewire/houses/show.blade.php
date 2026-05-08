@@ -85,56 +85,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-zinc-500 mb-1">{{ __('Pokémon') }}</label>
-                            <div x-data="pokemonAutocomplete(@js($form->species))"
-                                 x-on:click.outside="open = false"
-                                 class="relative">
-                                <div class="relative">
-                                    <input
-                                        type="text"
-                                        x-model="search"
-                                        x-on:input.debounce.150ms="filter()"
-                                        x-on:focus="if (search && search.length >= 2) filter()"
-                                        x-on:blur="if (!open) $wire.set('form.species', search)"
-                                        x-on:keydown.escape="open = false"
-                                        x-on:keydown.arrow-down.prevent="highlightNext()"
-                                        x-on:keydown.arrow-up.prevent="highlightPrev()"
-                                        x-on:keydown.enter.prevent="selectHighlighted()"
-                                        placeholder="{{ __('e.g. Charizard') }}"
-                                        autocomplete="off"
-                                        class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500 pr-8"
-                                    >
-                                    <div x-show="loading" class="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
-                                        <svg class="animate-spin h-4 w-4 text-zinc-400" fill="none" viewBox="0 0 24 24">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div
-                                    x-show="open"
-                                    x-transition:enter="transition ease-out duration-100"
-                                    x-transition:enter-start="opacity-0 -translate-y-1"
-                                    x-transition:enter-end="opacity-100 translate-y-0"
-                                    class="absolute z-50 w-full mt-1 bg-white border border-zinc-200 rounded-xl shadow-lg max-h-56 overflow-y-auto"
-                                >
-                                    <template x-for="(p, i) in results" :key="p.v">
-                                        <button
-                                            type="button"
-                                            x-on:click="select(p)"
-                                            x-on:mouseenter="highlighted = i"
-                                            x-bind:class="highlighted === i ? 'bg-violet-50 text-violet-900' : 'text-zinc-700 hover:bg-zinc-50'"
-                                            class="w-full text-left px-3 py-1.5 text-sm flex items-center gap-2.5 transition-colors"
-                                        >
-                                            <img
-                                                :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png`"
-                                                class="w-8 h-8 object-contain flex-shrink-0"
-                                                x-on:error="$el.style.display='none'"
-                                            >
-                                            <span x-text="p.l"></span>
-                                        </button>
-                                    </template>
-                                </div>
-                            </div>
+                            <x-pokemon-field :species="$form->species" placeholder="{{ __('e.g. Charizard') }}" />
                             @error('form.species') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                         </div>
                     </div>
@@ -160,85 +111,17 @@
                     </div>
 
                     {{-- TM + Shiny --}}
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
-                        <div x-data="tmSelect(@js($form->species), @js((bool) $form->isShiny))" x-show="hasSpecies">
-                            <label class="block text-xs font-medium text-zinc-500 mb-1">TM</label>
-                            <select wire:model="form.tm"
-                                    x-effect="$el.value = $wire.form.tm || ''"
-                                    class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500">
-                                <option value="">{{ __('None') }}</option>
-                                <template x-for="opt in availableOptions" :key="opt">
-                                    <option :value="opt" x-text="opt"></option>
-                                </template>
-                            </select>
-                            @error('form.tm') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-                        </div>
-                        <div class="flex items-center gap-2 pb-2">
-                            <input wire:model="form.isShiny" id="isShiny" type="checkbox"
-                                   class="rounded border-zinc-300 text-violet-600 shadow-sm focus:ring-violet-500">
-                            <label for="isShiny" class="text-sm font-medium text-zinc-600">{{ __('Shiny') }}</label>
-                        </div>
-                    </div>
+                    <x-tm-shiny-field :species="$form->species" :is-shiny="$form->isShiny" shiny-id="houseIsShiny" />
 
                     {{-- Held X --}}
-                    <div x-data="heldItemSelect(@js($form->heldXName), @js($heldX), 'form.heldXName', 'form.heldXTier')">
-                        <label class="block text-xs font-medium text-zinc-500 mb-1">{{ __('Held X (optional)') }}</label>
-                        <div class="grid grid-cols-3 gap-2">
-                            <div class="col-span-2 relative">
-                                <div class="absolute inset-y-0 left-2 flex items-center pointer-events-none" x-show="item">
-                                    <img :src="`/images/helds/tiers/${item.toLowerCase()}-t${$wire.form.heldXTier || 1}.png`" class="h-8 w-8 object-contain" onerror="this.style.display='none'">
-                                </div>
-                                <select x-model="item"
-                                        :class="item ? 'pl-10' : ''"
-                                        class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500">
-                                    <option value="">{{ __('None') }}</option>
-                                    @foreach(array_keys($heldX) as $itemName)
-                                        <option value="{{ $itemName }}">{{ $itemName }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div>
-                                <select wire:model="form.heldXTier"
-                                        x-bind:disabled="!item"
-                                        class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500 disabled:opacity-40">
-                                    <option value="">T</option>
-                                    <template x-for="t in availableTiers" :key="t">
-                                        <option :value="t" x-text="`T${t}`"></option>
-                                    </template>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+                    <x-held-field :label="__('Held X (optional)')" :items="$heldX"
+                                  name-field="form.heldXName" tier-field="form.heldXTier"
+                                  :current-name="$form->heldXName" />
 
                     {{-- Held Y --}}
-                    <div x-data="heldItemSelect(@js($form->heldYName), @js($heldY), 'form.heldYName', 'form.heldYTier')">
-                        <label class="block text-xs font-medium text-zinc-500 mb-1">{{ __('Held Y (optional)') }}</label>
-                        <div class="grid grid-cols-3 gap-2">
-                            <div class="col-span-2 relative">
-                                <div class="absolute inset-y-0 left-2 flex items-center pointer-events-none" x-show="item">
-                                    <img :src="`/images/helds/tiers/${item.toLowerCase()}-t${$wire.form.heldYTier || 1}.png`" class="h-8 w-8 object-contain" onerror="this.style.display='none'">
-                                </div>
-                                <select x-model="item"
-                                        :class="item ? 'pl-10' : ''"
-                                        class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500">
-                                    <option value="">{{ __('None') }}</option>
-                                    @foreach(array_keys($heldY) as $itemName)
-                                        <option value="{{ $itemName }}">{{ $itemName }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div>
-                                <select wire:model="form.heldYTier"
-                                        x-bind:disabled="!item"
-                                        class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500 disabled:opacity-40">
-                                    <option value="">T</option>
-                                    <template x-for="t in availableTiers" :key="t">
-                                        <option :value="t" x-text="`T${t}`"></option>
-                                    </template>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+                    <x-held-field :label="__('Held Y (optional)')" :items="$heldY"
+                                  name-field="form.heldYName" tier-field="form.heldYTier"
+                                  :current-name="$form->heldYName" />
                     <div class="flex gap-3">
                         <button type="submit"
                                 wire:loading.attr="disabled" wire:target="save"
