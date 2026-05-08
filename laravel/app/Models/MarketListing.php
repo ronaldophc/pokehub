@@ -7,6 +7,7 @@ use App\Enums\PxgServer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MarketListing extends Model
 {
@@ -32,6 +33,11 @@ class MarketListing extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function offers(): HasMany
+    {
+        return $this->hasMany(MarketOffer::class, 'listing_id');
     }
 
     public function scopeActive(Builder $query): Builder

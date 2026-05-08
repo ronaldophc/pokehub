@@ -166,5 +166,124 @@
                 </div>
             </div>
         </x-card>
+
+        {{-- Ofertas --}}
+        <div class="mt-6 space-y-4">
+
+            @if($isOwner)
+                {{-- Dono: lista de ofertas recebidas --}}
+                <h2 class="text-sm font-semibold text-zinc-700">
+                    Ofertas recebidas
+                    @if($offers->isNotEmpty())
+                        <span class="ml-1.5 text-xs font-medium bg-violet-100 text-violet-600 rounded-full px-2 py-0.5">{{ $offers->count() }}</span>
+                    @endif
+                </h2>
+
+                @forelse($offers as $offer)
+                    @php
+                        $statusClass = match($offer->status) {
+                            \App\Enums\MarketOfferStatus::Pending  => 'bg-amber-50 text-amber-600 border-amber-200',
+                            \App\Enums\MarketOfferStatus::Accepted => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                            \App\Enums\MarketOfferStatus::Rejected => 'bg-zinc-100 text-zinc-400 border-zinc-200',
+                        };
+                        $statusLabel = match($offer->status) {
+                            \App\Enums\MarketOfferStatus::Pending  => 'Pendente',
+                            \App\Enums\MarketOfferStatus::Accepted => 'Aceita',
+                            \App\Enums\MarketOfferStatus::Rejected => 'Recusada',
+                        };
+                    @endphp
+                    <x-card class="flex items-start justify-between gap-4">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-sm font-medium text-zinc-900">{{ $offer->user->name }}</span>
+                                <span class="text-xs border rounded-full px-2 py-0.5 {{ $statusClass }}">{{ $statusLabel }}</span>
+                            </div>
+                            <p class="text-sm text-zinc-600 leading-relaxed">{{ $offer->message }}</p>
+                            <p class="text-xs text-zinc-400 mt-1">{{ $offer->created_at->diffForHumans() }}</p>
+                        </div>
+                        @if($offer->status === \App\Enums\MarketOfferStatus::Pending && $listing->isActive())
+                            <div class="flex gap-2 shrink-0">
+                                <button x-on:click="$dispatch('open-confirm', {
+                                            message: 'Aceitar oferta de {{ $offer->user->name }}? O anúncio será marcado como vendido.',
+                                            type: 'info',
+                                            action: () => $wire.acceptOffer({{ $offer->id }})
+                                        })"
+                                        wire:loading.attr="disabled" wire:target="acceptOffer({{ $offer->id }})"
+                                        class="text-xs px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-medium transition-colors disabled:opacity-50">
+                                    Aceitar
+                                </button>
+                                <button x-on:click="$dispatch('open-confirm', {
+                                            message: 'Recusar oferta de {{ $offer->user->name }}?',
+                                            type: 'danger',
+                                            action: () => $wire.rejectOffer({{ $offer->id }})
+                                        })"
+                                        wire:loading.attr="disabled" wire:target="rejectOffer({{ $offer->id }})"
+                                        class="text-xs px-3 py-1.5 rounded-lg text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 transition-colors disabled:opacity-50">
+                                    Recusar
+                                </button>
+                            </div>
+                        @endif
+                    </x-card>
+                @empty
+                    <x-card class="text-center py-8">
+                        <p class="text-sm text-zinc-400">Nenhuma oferta recebida ainda.</p>
+                    </x-card>
+                @endforelse
+
+            @elseauth
+                {{-- Visitante autenticado: formulário ou status da oferta --}}
+                @if($listing->isActive())
+                    @if($myOffer)
+                        @php
+                            $myStatusClass = match($myOffer->status) {
+                                \App\Enums\MarketOfferStatus::Pending  => 'bg-amber-50 border-amber-200 text-amber-700',
+                                \App\Enums\MarketOfferStatus::Accepted => 'bg-emerald-50 border-emerald-200 text-emerald-700',
+                                \App\Enums\MarketOfferStatus::Rejected => 'bg-zinc-50 border-zinc-200 text-zinc-500',
+                            };
+                            $myStatusMsg = match($myOffer->status) {
+                                \App\Enums\MarketOfferStatus::Pending  => 'Sua oferta está pendente de resposta.',
+                                \App\Enums\MarketOfferStatus::Accepted => 'Sua oferta foi aceita! Entre em contato com o vendedor.',
+                                \App\Enums\MarketOfferStatus::Rejected => 'Sua oferta foi recusada.',
+                            };
+                        @endphp
+                        <x-card class="border {{ $myStatusClass }}">
+                            <p class="text-sm font-medium">{{ $myStatusMsg }}</p>
+                            <p class="text-xs text-zinc-400 mt-1">Sua oferta: <span class="text-zinc-600">{{ $myOffer->message }}</span></p>
+                        </x-card>
+                    @else
+                        <x-card>
+                            <h2 class="text-sm font-semibold text-zinc-700 mb-3">Fazer uma oferta</h2>
+                            <form wire:submit="submitOffer" class="space-y-3">
+                                <div>
+                                    <textarea wire:model="offerMessage" rows="2"
+                                              placeholder="Descreva sua oferta (ex: 600kk, ou troco por Gengar T3 + 200kk)"
+                                              class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500"></textarea>
+                                    @error('offerMessage') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                                </div>
+                                <button type="submit"
+                                        wire:loading.attr="disabled" wire:target="submitOffer"
+                                        class="bg-violet-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-violet-700 transition-colors disabled:opacity-50">
+                                    <span wire:loading.remove wire:target="submitOffer">Enviar oferta</span>
+                                    <span wire:loading wire:target="submitOffer">Enviando...</span>
+                                </button>
+                            </form>
+                        </x-card>
+                    @endif
+                @endif
+            @else
+                {{-- Visitante não autenticado --}}
+                @if($listing->isActive())
+                    <x-card class="text-center py-6">
+                        <p class="text-sm text-zinc-500 mb-3">Entre para fazer uma oferta neste anúncio.</p>
+                        <a href="{{ route('login') }}" wire:navigate
+                           class="inline-block bg-violet-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-violet-700 transition-colors">
+                            Entrar
+                        </a>
+                    </x-card>
+                @endif
+            @endauth
+
+        </div>
+
     </div>
 </div>
