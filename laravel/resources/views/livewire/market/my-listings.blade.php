@@ -55,12 +55,8 @@
                         @if($listing->is_shiny)
                             <span class="text-xs bg-amber-50 text-amber-600 border border-amber-200 rounded px-1 py-0.5">✦ Shiny</span>
                         @endif
-                        <span class="text-xs text-zinc-400">Lv. {{ $listing->level }}</span>
-                        <span class="text-xs text-zinc-400">· {{ $listing->server->value }}</span>
+                        <span class="text-xs text-zinc-400">{{ $listing->server->value }}</span>
                     </div>
-                    @if($listing->name)
-                        <p class="text-xs text-zinc-400">"{{ $listing->name }}"</p>
-                    @endif
                     <div class="flex items-center gap-3 mt-1">
                         <span class="text-sm font-bold text-zinc-900">{{ number_format($listing->price, 0, ',', '.') }}</span>
                         @if($listing->isActive())

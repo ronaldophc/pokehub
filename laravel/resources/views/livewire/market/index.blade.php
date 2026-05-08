@@ -89,10 +89,6 @@
                         <div class="p-3 flex flex-col gap-1.5 flex-1">
                             <div>
                                 <p class="font-semibold text-zinc-900 text-sm leading-tight">{{ $listing->species }}</p>
-                                @if($listing->name)
-                                    <p class="text-xs text-zinc-400">{{ $listing->name }}</p>
-                                @endif
-                                <p class="text-xs text-zinc-400">Lv. {{ $listing->level }}</p>
                             </div>
 
                             @if($listing->tm || $listing->held_x_name || $listing->held_y_name)

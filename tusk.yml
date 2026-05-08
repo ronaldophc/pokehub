@@ -68,6 +68,32 @@ tasks:
     usage: Lista os containers e seus status
     run: docker compose ps
 
+  deploy:
+    usage: Faz deploy da nova versão em produção (rodar no servidor)
+    run: |
+      git pull
+      docker compose -f docker-compose.prod.yml build app
+      docker compose -f docker-compose.prod.yml exec app php artisan migrate --force
+      docker compose -f docker-compose.prod.yml exec app php artisan storage:link
+      docker compose -f docker-compose.prod.yml exec app php artisan config:cache
+      docker compose -f docker-compose.prod.yml exec app php artisan route:cache
+      docker compose -f docker-compose.prod.yml exec app php artisan view:cache
+      docker compose -f docker-compose.prod.yml restart app queue reverb
+
+  prod-logs:
+    usage: Logs de produção de um serviço (app, nginx, reverb, queue, db)
+    args:
+      service:
+        usage: Nome do serviço
+    run: docker compose -f docker-compose.prod.yml logs -f ${service}
+
+  prod-artisan:
+    usage: Roda um comando artisan em produção (ex. tusk prod-artisan -- route:list)
+    args:
+      cmd:
+        usage: Comando artisan
+    run: docker compose -f docker-compose.prod.yml exec app php artisan ${cmd}
+
   pma:
     usage: Sobe o phpMyAdmin temporário (acesse em http://localhost:8081) — derruba com Ctrl+C
     run: |

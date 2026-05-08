@@ -12,8 +12,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('species', 100);
-            $table->string('name', 100)->nullable();
-            $table->unsignedSmallInteger('level');
             $table->boolean('is_shiny')->default(false);
             $table->string('tm', 100)->nullable();
             $table->string('held_x_name', 50)->nullable();

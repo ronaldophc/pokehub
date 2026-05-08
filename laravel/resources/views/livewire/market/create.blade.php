@@ -16,79 +16,63 @@
         <x-card>
             <form wire:submit="save" class="space-y-5">
 
-                {{-- Pokémon + Apelido --}}
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-medium text-zinc-500 mb-1">Pokémon <span class="text-red-400">*</span></label>
-                        <div x-data="pokemonAutocomplete(@js($form->species))"
-                             x-on:click.outside="open = false"
-                             class="relative">
-                            <input
-                                type="text"
-                                x-model="search"
-                                x-on:input.debounce.150ms="filter()"
-                                x-on:focus="if (search && search.length >= 2) filter()"
-                                x-on:blur="if (!open) $wire.set('form.species', search)"
-                                x-on:keydown.escape="open = false"
-                                x-on:keydown.arrow-down.prevent="highlightNext()"
-                                x-on:keydown.arrow-up.prevent="highlightPrev()"
-                                x-on:keydown.enter.prevent="selectHighlighted()"
-                                placeholder="ex: Charizard"
-                                autocomplete="off"
-                                class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500"
-                            >
-                            <div
-                                x-show="open"
-                                x-transition:enter="transition ease-out duration-100"
-                                x-transition:enter-start="opacity-0 -translate-y-1"
-                                x-transition:enter-end="opacity-100 translate-y-0"
-                                class="absolute z-50 w-full mt-1 bg-white border border-zinc-200 rounded-xl shadow-lg max-h-56 overflow-y-auto"
-                            >
-                                <template x-for="(p, i) in results" :key="p.v">
-                                    <button
-                                        type="button"
-                                        x-on:click="select(p)"
-                                        x-on:mouseenter="highlighted = i"
-                                        x-bind:class="highlighted === i ? 'bg-violet-50 text-violet-900' : 'text-zinc-700 hover:bg-zinc-50'"
-                                        class="w-full text-left px-3 py-1.5 text-sm flex items-center gap-2.5 transition-colors"
-                                    >
-                                        <img :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png`"
-                                             class="w-8 h-8 object-contain flex-shrink-0"
-                                             x-on:error="$el.style.display='none'">
-                                        <span x-text="p.l"></span>
-                                    </button>
-                                </template>
-                            </div>
+                {{-- Pokémon --}}
+                <div>
+                    <label class="block text-xs font-medium text-zinc-500 mb-1">Pokémon <span class="text-red-400">*</span></label>
+                    <div x-data="pokemonAutocomplete(@js($form->species))"
+                         x-on:click.outside="open = false"
+                         class="relative">
+                        <input
+                            type="text"
+                            x-model="search"
+                            x-on:input.debounce.150ms="filter()"
+                            x-on:focus="if (search && search.length >= 2) filter()"
+                            x-on:blur="if (!open) $wire.set('form.species', search)"
+                            x-on:keydown.escape="open = false"
+                            x-on:keydown.arrow-down.prevent="highlightNext()"
+                            x-on:keydown.arrow-up.prevent="highlightPrev()"
+                            x-on:keydown.enter.prevent="selectHighlighted()"
+                            placeholder="ex: Charizard"
+                            autocomplete="off"
+                            class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500"
+                        >
+                        <div
+                            x-show="open"
+                            x-transition:enter="transition ease-out duration-100"
+                            x-transition:enter-start="opacity-0 -translate-y-1"
+                            x-transition:enter-end="opacity-100 translate-y-0"
+                            class="absolute z-50 w-full mt-1 bg-white border border-zinc-200 rounded-xl shadow-lg max-h-56 overflow-y-auto"
+                        >
+                            <template x-for="(p, i) in results" :key="p.v">
+                                <button
+                                    type="button"
+                                    x-on:click="select(p)"
+                                    x-on:mouseenter="highlighted = i"
+                                    x-bind:class="highlighted === i ? 'bg-violet-50 text-violet-900' : 'text-zinc-700 hover:bg-zinc-50'"
+                                    class="w-full text-left px-3 py-1.5 text-sm flex items-center gap-2.5 transition-colors"
+                                >
+                                    <img :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png`"
+                                         class="w-8 h-8 object-contain flex-shrink-0"
+                                         x-on:error="$el.style.display='none'">
+                                    <span x-text="p.l"></span>
+                                </button>
+                            </template>
                         </div>
-                        @error('form.species') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                     </div>
-                    <div>
-                        <label class="block text-xs font-medium text-zinc-500 mb-1">Apelido</label>
-                        <input wire:model="form.name" type="text" placeholder="ex: Tocha"
-                               class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500">
-                        @error('form.name') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-                    </div>
+                    @error('form.species') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                 </div>
 
-                {{-- Level + Servidor --}}
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-medium text-zinc-500 mb-1">Level <span class="text-red-400">*</span></label>
-                        <input wire:model="form.level" type="number" min="1" max="9999"
-                               class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500">
-                        @error('form.level') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-zinc-500 mb-1">Servidor <span class="text-red-400">*</span></label>
-                        <select wire:model="form.server"
-                                class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500">
-                            <option value="">Selecione...</option>
-                            @foreach($servers as $s)
-                                <option value="{{ $s->value }}">{{ $s->value }}</option>
-                            @endforeach
-                        </select>
-                        @error('form.server') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-                    </div>
+                {{-- Servidor --}}
+                <div>
+                    <label class="block text-xs font-medium text-zinc-500 mb-1">Servidor <span class="text-red-400">*</span></label>
+                    <select wire:model="form.server"
+                            class="w-full border-zinc-300 rounded-lg text-sm focus:ring-violet-500 focus:border-violet-500">
+                        <option value="">Selecione...</option>
+                        @foreach($servers as $s)
+                            <option value="{{ $s->value }}">{{ $s->value }}</option>
+                        @endforeach
+                    </select>
+                    @error('form.server') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                 </div>
 
                 {{-- TM + Shiny --}}

@@ -32,8 +32,6 @@ Board global de anúncios para jogadores do PXG anunciarem pokémons à venda. Q
 | `id` | bigint PK | |
 | `user_id` | FK → users | vendedor |
 | `species` | string(100) | espécie do pokémon |
-| `name` | string(100), nullable | apelido customizado |
-| `level` | smallint unsigned | |
 | `is_shiny` | boolean, default false | |
 | `tm` | string(100), nullable | |
 | `held_x_name` | string(50), nullable | |

@@ -47,10 +47,6 @@
                                     <span class="text-xs font-medium bg-amber-50 text-amber-600 border border-amber-200 rounded px-1.5 py-0.5">✦ Shiny</span>
                                 @endif
                             </div>
-                            @if($listing->name)
-                                <p class="text-sm text-zinc-400">"{{ $listing->name }}"</p>
-                            @endif
-                            <p class="text-sm text-zinc-500 mt-0.5">Lv. {{ $listing->level }}</p>
                         </div>
 
                         {{-- Status badge --}}
@@ -96,7 +92,7 @@
                     <div class="bg-zinc-50 rounded-xl px-4 py-3">
                         <p class="text-xs text-zinc-400 mb-0.5">Preço</p>
                         <p class="text-2xl font-bold text-zinc-900">{{ number_format($listing->price, 0, ',', '.') }}</p>
-                        <p class="text-xs text-zinc-400 mt-0.5">dinheiro in-game · Servidor {{ $listing->server->value }}</p>
+                        <p class="text-xs text-zinc-400 mt-0.5">Servidor {{ $listing->server->value }}</p>
                     </div>
 
                     {{-- Contato --}}

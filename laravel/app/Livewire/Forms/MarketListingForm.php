@@ -11,12 +11,6 @@ class MarketListingForm extends Form
     #[Validate('required|string|min:2|max:60', message: 'Selecione um pokémon válido.')]
     public string $species = '';
 
-    #[Validate('nullable|string|min:2|max:60', as: 'apelido')]
-    public ?string $name = null;
-
-    #[Validate('required|integer|min:1|max:9999', as: 'level')]
-    public int $level = 1;
-
     public bool $isShiny = false;
 
     #[Validate('nullable|string|in:TM Tank,TM DPS,TM Burst,TM Off-Tank', as: 'TM')]
@@ -53,8 +47,6 @@ class MarketListingForm extends Form
     {
         return [
             'species'         => $this->species,
-            'name'            => $this->name ?: null,
-            'level'           => $this->level,
             'is_shiny'        => $this->isShiny,
             'tm'              => $this->tm ?: null,
             'held_x_name'     => $this->heldXName ?: null,

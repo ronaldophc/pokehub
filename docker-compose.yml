@@ -67,7 +67,8 @@ services:
         networks:
             - pokehub-network
         depends_on:
-            - app
+            app:
+                condition: service_started
             db:
                 condition: service_healthy
 
