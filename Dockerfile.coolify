@@ -20,8 +20,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=UTC
 
 RUN apt-get update && apt-get install -y \
-    software-properties-common curl git unzip \
-    && add-apt-repository ppa:ondrej/php \
+    software-properties-common gnupg ca-certificates curl git unzip \
+    && add-apt-repository ppa:ondrej/php -y \
     && apt-get update && apt-get install -y \
     php8.4-fpm \
     php8.4-mysql \
