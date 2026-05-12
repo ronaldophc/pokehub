@@ -16,6 +16,7 @@ services:
         working_dir: /var/www
         networks:
             - pokehub-network
+            - coolify
         depends_on:
             - db
         labels:
@@ -65,6 +66,8 @@ services:
 networks:
     pokehub-network:
         driver: bridge
+    coolify:
+        external: true
 
 volumes:
     dbdata:
