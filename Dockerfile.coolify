@@ -37,11 +37,14 @@ WORKDIR /var/www
 
 COPY docker/php/custom.ini /usr/local/etc/php/conf.d/custom.ini
 
-COPY --chown=$user:$user laravel/ .
+COPY laravel/ .
 
-# Install PHP deps
-USER $user
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+RUN composer install --no-dev --optimize-autoloader --no-interaction \
+    && chown -R $user:$user /var/www
 
 # Copy built assets from stage 1
-COPY --from=assets --chown=$user:$user /app/public/build ./public/build
+COPY --from=assets /app/public/build ./public/build
+
+RUN chown -R $user:$user ./public/build
+
+USER $user
