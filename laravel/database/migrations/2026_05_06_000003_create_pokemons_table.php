@@ -13,7 +13,6 @@ return new class extends Migration
             $table->foreignId('house_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('species');
-            $table->unsignedSmallInteger('level')->default(1);
             $table->string('sprite_url')->nullable();
             $table->text('notes')->nullable();
             $table->foreignId('current_holder_id')->nullable()->constrained('users')->nullOnDelete();
