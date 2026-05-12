@@ -35,7 +35,6 @@ RUN apt-get update && apt-get install -y \
     php8.4-sockets \
     php8.4-exif \
     php8.4-readline \
-    php8.4-redis \
     nginx \
     supervisor \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
