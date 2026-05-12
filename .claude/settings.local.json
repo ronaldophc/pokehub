@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:wiki.pokexgames.com)"
+      "WebFetch(domain:wiki.pokexgames.com)",
+      "Bash(grep -E '\\\\.\\(yml|yaml|json|env|dockerfile|Dockerfile\\)$')"
     ]
   }
 }
