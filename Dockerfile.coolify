@@ -33,7 +33,15 @@ COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 COPY laravel/ .
 
+# .env mínimo para o package:discover não falhar por falta de variáveis
+RUN cp .env.example .env \
+    && echo "REVERB_APP_KEY=build" >> .env \
+    && echo "REVERB_APP_SECRET=build" >> .env \
+    && echo "REVERB_APP_ID=build" >> .env
+
 RUN COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --optimize-autoloader --no-interaction
+
+RUN rm .env
 
 COPY --from=assets /app/public/build ./public/build
 
