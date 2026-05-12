@@ -4,31 +4,20 @@ services:
             context: .
             dockerfile: Dockerfile.coolify
             args:
-                user: pokehub
-                uid: 1000
                 VITE_REVERB_APP_KEY: ${VITE_REVERB_APP_KEY}
                 VITE_REVERB_HOST: ${VITE_REVERB_HOST}
                 VITE_REVERB_PORT: ${VITE_REVERB_PORT:-443}
                 VITE_REVERB_SCHEME: ${VITE_REVERB_SCHEME:-https}
         image: pokehub_app:latest
-        container_name: pokehub_app
         restart: unless-stopped
         working_dir: /var/www
         networks:
             - pokehub-network
-            - coolify
         depends_on:
             - db
-        labels:
-            - traefik.enable=true
-            - traefik.http.routers.pokehub.rule=Host(`${APP_DOMAIN}`)
-            - traefik.http.routers.pokehub.entrypoints=https
-            - traefik.http.routers.pokehub.tls.certresolver=letsencrypt
-            - traefik.http.services.pokehub.loadbalancer.server.port=80
 
     reverb:
         image: pokehub_app:latest
-        container_name: pokehub_reverb
         restart: unless-stopped
         working_dir: /var/www
         command: php artisan reverb:start --host=0.0.0.0 --port=8080
@@ -39,7 +28,6 @@ services:
 
     queue:
         image: pokehub_app:latest
-        container_name: pokehub_queue
         restart: unless-stopped
         working_dir: /var/www
         command: php artisan queue:work --sleep=3 --tries=3 --max-time=3600
@@ -51,7 +39,6 @@ services:
 
     db:
         image: mysql:8.0
-        container_name: pokehub_db
         restart: unless-stopped
         environment:
             MYSQL_DATABASE: ${DB_DATABASE}
@@ -66,8 +53,6 @@ services:
 networks:
     pokehub-network:
         driver: bridge
-    coolify:
-        external: true
 
 volumes:
     dbdata:

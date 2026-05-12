@@ -13,49 +13,70 @@ ARG VITE_REVERB_SCHEME=https
 
 RUN npm run build
 
-# Stage 2: app (nginx + php-fpm via supervisor)
-FROM php:8.4-fpm
+# Stage 2: app
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=UTC
 
 RUN apt-get update && apt-get install -y \
-    git curl libpng-dev libonig-dev libxml2-dev zip unzip \
-    nginx supervisor \
+    software-properties-common curl git unzip \
+    && add-apt-repository ppa:ondrej/php \
+    && apt-get update && apt-get install -y \
+    php8.4-fpm \
+    php8.4-mysql \
+    php8.4-mbstring \
+    php8.4-xml \
+    php8.4-bcmath \
+    php8.4-gd \
+    php8.4-curl \
+    php8.4-zip \
+    php8.4-pcntl \
+    php8.4-sockets \
+    php8.4-exif \
+    php8.4-readline \
+    php8.4-redis \
+    nginx \
+    supervisor \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd sockets
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+COPY docker/php/custom.ini /etc/php/8.4/fpm/conf.d/99-custom.ini
+COPY docker/php/custom.ini /etc/php/8.4/cli/conf.d/99-custom.ini
+COPY docker/nginx/coolify.conf /etc/nginx/sites-available/default
+COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+
+RUN rm -f /etc/nginx/sites-enabled/default \
+    && ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default \
+    && chmod +x /usr/local/bin/entrypoint.sh \
+    && mkdir -p /var/log/supervisor /run/php
+
 WORKDIR /var/www
 
-COPY docker/php/custom.ini /usr/local/etc/php/conf.d/custom.ini
-COPY docker/nginx/coolify.conf /etc/nginx/conf.d/default.conf
-COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+# Copy composer files first for layer caching
+COPY laravel/composer.json laravel/composer.lock laravel/.env.example ./
 
-RUN rm -f /etc/nginx/sites-enabled/default
-
-COPY laravel/ .
-
-# .env mínimo para o package:discover não falhar por falta de variáveis
+# Stub .env so package:discover doesn't fail on missing REVERB vars
 RUN cp .env.example .env \
     && echo "REVERB_APP_KEY=build" >> .env \
     && echo "REVERB_APP_SECRET=build" >> .env \
     && echo "REVERB_APP_ID=build" >> .env
 
-RUN COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --optimize-autoloader --no-interaction --no-cache
+RUN COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --optimize-autoloader --no-interaction
 
 RUN rm .env
 
+# Copy rest of app
+COPY laravel/ .
 COPY --from=assets /app/public/build ./public/build
 
-ARG user=pokehub
-ARG uid=1000
-RUN useradd -m -G www-data,root -u $uid -d /home/$user $user \
-    && mkdir -p /home/$user/.composer /home/$user/.config/psysh \
-    && mkdir -p /var/log/supervisor \
-    && chown -R $user:$user /var/www \
-    && chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache /var/log/nginx /var/lib/nginx \
+RUN chown -R www-data:www-data /var/www \
+    && chmod -R 755 /var/www \
     && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 EXPOSE 80
 
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
