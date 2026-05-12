@@ -1,0 +1,11 @@
+.git
+.github
+laravel/node_modules
+laravel/vendor
+laravel/.env
+laravel/storage/logs/*
+laravel/storage/framework/cache/*
+laravel/storage/framework/sessions/*
+laravel/storage/framework/views/*
+laravel/public/build
+docker/nginx/Dockerfile

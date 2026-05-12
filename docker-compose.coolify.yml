@@ -10,6 +10,7 @@ services:
                 VITE_REVERB_HOST: ${VITE_REVERB_HOST}
                 VITE_REVERB_PORT: ${VITE_REVERB_PORT:-443}
                 VITE_REVERB_SCHEME: ${VITE_REVERB_SCHEME:-https}
+        image: pokehub_app:latest
         container_name: pokehub_app
         restart: unless-stopped
         working_dir: /var/www
@@ -25,12 +26,7 @@ services:
             - traefik.http.services.pokehub.loadbalancer.server.port=80
 
     reverb:
-        build:
-            context: .
-            dockerfile: Dockerfile.coolify
-            args:
-                user: pokehub
-                uid: 1000
+        image: pokehub_app:latest
         container_name: pokehub_reverb
         restart: unless-stopped
         working_dir: /var/www
@@ -41,12 +37,7 @@ services:
             - app
 
     queue:
-        build:
-            context: .
-            dockerfile: Dockerfile.coolify
-            args:
-                user: pokehub
-                uid: 1000
+        image: pokehub_app:latest
         container_name: pokehub_queue
         restart: unless-stopped
         working_dir: /var/www
