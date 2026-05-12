@@ -17,26 +17,12 @@ services:
             - pokehub-network
         depends_on:
             - db
-
-    nginx:
-        image: nginx:alpine
-        container_name: pokehub_nginx
-        restart: unless-stopped
-        volumes:
-            - ./docker/nginx/coolify.conf:/etc/nginx/conf.d/default.conf
-            - ./laravel/public:/var/www/public
-        networks:
-            - pokehub-network
-        depends_on:
-            - app
         labels:
             - traefik.enable=true
             - traefik.http.routers.pokehub.rule=Host(`${APP_DOMAIN}`)
             - traefik.http.routers.pokehub.entrypoints=https
             - traefik.http.routers.pokehub.tls.certresolver=letsencrypt
             - traefik.http.services.pokehub.loadbalancer.server.port=80
-            # WebSocket support para /app (Reverb)
-            - traefik.http.middlewares.pokehub-ws.headers.customrequestheaders.X-Forwarded-Proto=https
 
     reverb:
         build:
