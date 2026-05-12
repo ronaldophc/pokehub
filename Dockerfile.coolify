@@ -25,30 +25,23 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd sockets
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Criar usuário após instalar dependências do sistema
-ARG user=pokehub
-ARG uid=1000
-RUN useradd -m -G www-data,root -u $uid -d /home/$user $user \
-    && mkdir -p /home/$user/.composer /home/$user/.config/psysh \
-    && chown -R $user:$user /home/$user
-
 WORKDIR /var/www
 
 COPY docker/php/custom.ini /usr/local/etc/php/conf.d/custom.ini
 COPY docker/nginx/coolify.conf /etc/nginx/conf.d/default.conf
 COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Copiar só composer.json primeiro para cache de dependências
-COPY laravel/composer.json laravel/composer.lock ./
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
-
-# Copiar o resto do código
 COPY laravel/ .
-RUN composer dump-autoload --optimize --no-dev
+
+RUN COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --optimize-autoloader --no-interaction
 
 COPY --from=assets /app/public/build ./public/build
 
-RUN mkdir -p /var/log/supervisor \
+ARG user=pokehub
+ARG uid=1000
+RUN useradd -m -G www-data,root -u $uid -d /home/$user $user \
+    && mkdir -p /home/$user/.composer /home/$user/.config/psysh \
+    && mkdir -p /var/log/supervisor \
     && chown -R $user:$user /var/www \
     && chown -R www-data:www-data /var/log/nginx /var/lib/nginx
 
